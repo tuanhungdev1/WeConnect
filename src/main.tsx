@@ -6,6 +6,8 @@ import { ThemeProvider } from "@mui/material";
 import "./styles/index.css";
 import RootLayout from "@layouts/RootLayout";
 import theme from "@configs/muiConfig";
+import RegisterPage from "@pages/auth/RegisterPage";
+import ModalProvider from "@contexts/ModalProvider";
 
 const HomePage = lazy(() => import("@pages/HomePage"));
 
@@ -17,6 +19,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
     ],
   },
 ]);
@@ -24,7 +30,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <ModalProvider>
+        <RouterProvider router={router} />
+      </ModalProvider>
     </ThemeProvider>
   </StrictMode>
 );

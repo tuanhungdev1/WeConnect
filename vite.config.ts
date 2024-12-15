@@ -17,6 +17,7 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "src/pages"),
       "@types-d": path.resolve(__dirname, "src/types"),
       "@styles": path.resolve(__dirname, "src/styles"),
+      "@redux": path.resolve(__dirname, "src/redux"),
     },
   },
 });
