@@ -2,15 +2,32 @@ import { PrimaryButton } from "@components/buttons";
 import { FormField } from "@components/formFields";
 import { TextInput } from "@components/formInputs";
 import { Typography } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 import FaceBookLogo from "/facebook-logo.svg";
 import GoogleLogo from "/google-logo.svg";
 import TwitterLogo from "/twiter-logo.svg";
 
+interface RegisterFormData {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 const RegisterPage = () => {
-  const { control } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+    getValues,
+  } = useForm<RegisterFormData>();
+
+  const onSubmit: SubmitHandler<RegisterFormData> = (data) => {
+    console.log(data);
+  };
 
   return (
     <div className="mt-5">
@@ -24,37 +41,73 @@ const RegisterPage = () => {
         Make your app management easy and fun!
       </Typography>
 
-      <form className="flex flex-col gap-4 mt-5">
+      <form
+        className="flex flex-col gap-4 mt-5"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <FormField
           control={control}
           label="Username"
-          name="username"
           Component={TextInput}
+          {...register("username", {
+            required: "Tên đăng nhập là bắt buộc",
+            maxLength: {
+              value: 100,
+              message: "Tên đăng nhập không được vượt quá 100 ký tự",
+            },
+          })}
         />
+        {errors.username && (
+          <Typography color="error">{errors.username.message}</Typography>
+        )}
         <FormField
           control={control}
           label="Email"
-          name="email"
           Component={TextInput}
           type="email"
+          {...register("email", {
+            required: "Email là bắt buộc",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+              message: "Địa chỉ email không hợp lệ",
+            },
+          })}
         />
-
+        {errors.email && (
+          <Typography color="error">{errors.email.message}</Typography>
+        )}
         <FormField
           control={control}
           label="Password"
-          name="password"
           Component={TextInput}
           type="password"
+          {...register("password", {
+            required: "Mật khẩu là bắt buộc",
+            minLength: {
+              value: 8,
+              message: "Mật khẩu phải có ít nhất 8 ký tự",
+            },
+          })}
         />
-
+        {errors.password && (
+          <Typography color="error">{errors.password.message}</Typography>
+        )}
         <FormField
           control={control}
           label="Confirm Password"
-          name="confirmPassword"
           Component={TextInput}
           type="password"
+          {...register("confirmPassword", {
+            required: "Xác nhận mật khẩu là bắt buộc",
+            validate: (value) =>
+              value === getValues("password") || "Mật khẩu không khớp",
+          })}
         />
-
+        {errors.confirmPassword && (
+          <Typography color="error">
+            {errors.confirmPassword.message}
+          </Typography>
+        )}
         <PrimaryButton
           type="submit"
           fullWidth
