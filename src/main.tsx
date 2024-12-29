@@ -4,10 +4,10 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
 import "./styles/index.css";
-import RootLayout from "@layouts/RootLayout";
 import theme from "@configs/muiConfig";
-import RegisterPage from "@pages/auth/RegisterPage";
 import ModalProvider from "@contexts/ModalProvider";
+import { AuthLayout, RootLayout } from "@layouts/index";
+import { LoginPage, OTPVerifyPage, RegisterPage } from "@pages/auth/index";
 
 const HomePage = lazy(() => import("@pages/HomePage"));
 
@@ -20,8 +20,21 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "/register",
-        element: <RegisterPage />,
+        element: <AuthLayout />,
+        children: [
+          {
+            path: "register",
+            element: <RegisterPage />,
+          },
+          {
+            path: "login",
+            element: <LoginPage />,
+          },
+          {
+            path: "verify-otp",
+            element: <OTPVerifyPage />,
+          },
+        ],
       },
     ],
   },

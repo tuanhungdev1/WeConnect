@@ -1,5 +1,5 @@
 const OTPVerifyPage = () => {
-  return <div></div>;
+  return <div>OTP Page</div>;
 };
 
 export default OTPVerifyPage;
