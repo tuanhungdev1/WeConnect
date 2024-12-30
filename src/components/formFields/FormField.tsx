@@ -5,28 +5,17 @@ interface FormFieldProps<T extends FieldValues> {
   control: Control<T>;
   label: string;
   name: Path<T>;
-  type?:
-    | "number"
-    | "search"
-    | "text"
-    | "password"
-    | "email"
-    | "url"
-    | "tel"
-    | "date";
+  type?: string;
+  placeholder?: string;
+  labelStyle?: React.CSSProperties;
   Component: React.ComponentType<{
     onChange: (...event: any[]) => void;
     value: any;
     name: string;
-    type?:
-      | "number"
-      | "search"
-      | "text"
-      | "password"
-      | "email"
-      | "url"
-      | "tel"
-      | "date";
+    type?: string;
+    label?: string;
+    placeholder?: string;
+    labelStyle?: React.CSSProperties;
     control?: Control<T>;
   }>;
 }
@@ -36,6 +25,8 @@ const FormField = <T extends FieldValues>({
   label,
   name,
   type,
+  placeholder,
+  labelStyle,
   Component,
 }: FormFieldProps<T>) => {
   return (
@@ -44,14 +35,16 @@ const FormField = <T extends FieldValues>({
       <Controller
         name={name}
         control={control}
-        render={({ field: { onChange, value } }) => {
+        render={({ field: { onChange, value, name } }) => {
           return (
             <Component
+              placeholder={placeholder}
               onChange={onChange}
               value={value}
               name={String(name)}
               type={type}
               control={control}
+              labelStyle={labelStyle}
             />
           );
         }}

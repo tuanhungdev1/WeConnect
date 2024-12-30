@@ -5,15 +5,10 @@ interface TextInputProps extends Omit<TextFieldProps, "onChange" | "type"> {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value: string | number;
   name: string;
-  type?:
-    | "text"
-    | "password"
-    | "email"
-    | "number"
-    | "url"
-    | "tel"
-    | "search"
-    | "date";
+  type?: string;
+  placeholder?: string;
+  label?: string;
+  labelStyle?: React.CSSProperties;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -21,6 +16,7 @@ const TextInput: React.FC<TextInputProps> = ({
   value,
   name,
   type = "text",
+  placeholder,
   ...rest
 }) => {
   return (
@@ -34,6 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({
       value={value}
       onChange={onChange}
       type={type}
+      placeholder={placeholder}
       {...rest}
     />
   );

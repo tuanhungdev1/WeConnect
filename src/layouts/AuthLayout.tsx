@@ -14,7 +14,7 @@ const AuthLayout = () => {
           <div className="w-[140px]  h-[140px] bg-slate-200 opacity-80 rounded-2xl -bottom-[60px] -right-[80px]"></div>
         </div>
 
-        <div className="relative max-w-[450px] w-full mx-4 bg-white px-8 py-8 rounded-lg shadow-lg">
+        <div className="relative min-w-[480px] max-w-[500px] select-none w-full mx-4 bg-white px-8 py-8 rounded-lg shadow-lg">
           <img
             src={WeconnectLogo}
             alt="Logo"

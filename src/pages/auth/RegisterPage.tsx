@@ -49,6 +49,7 @@ const RegisterPage = () => {
           control={control}
           label="Username"
           Component={TextInput}
+          placeholder="Enter your username"
           {...register("username", {
             required: "Tên đăng nhập là bắt buộc",
             maxLength: {
@@ -65,6 +66,7 @@ const RegisterPage = () => {
           label="Email"
           Component={TextInput}
           type="email"
+          placeholder="Enter your email"
           {...register("email", {
             required: "Email là bắt buộc",
             pattern: {
@@ -81,6 +83,7 @@ const RegisterPage = () => {
           label="Password"
           Component={TextInput}
           type="password"
+          placeholder="Enter your password"
           {...register("password", {
             required: "Mật khẩu là bắt buộc",
             minLength: {
@@ -97,6 +100,7 @@ const RegisterPage = () => {
           label="Confirm Password"
           Component={TextInput}
           type="password"
+          placeholder="Confirm your password"
           {...register("confirmPassword", {
             required: "Xác nhận mật khẩu là bắt buộc",
             validate: (value) =>

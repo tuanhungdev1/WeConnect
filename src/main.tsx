@@ -7,7 +7,14 @@ import "./styles/index.css";
 import theme from "@configs/muiConfig";
 import ModalProvider from "@contexts/ModalProvider";
 import { AuthLayout, RootLayout } from "@layouts/index";
-import { LoginPage, OTPVerifyPage, RegisterPage } from "@pages/auth/index";
+import {
+  EnterVerificationCodePage,
+  LoginPage,
+  OTPVerifyPage,
+  RegisterPage,
+  ResetPasswordPage,
+  VerifyEmailPage,
+} from "@pages/auth/index";
 
 const HomePage = lazy(() => import("@pages/HomePage"));
 
@@ -33,6 +40,18 @@ const router = createBrowserRouter([
           {
             path: "verify-otp",
             element: <OTPVerifyPage />,
+          },
+          {
+            path: "verify-email",
+            element: <VerifyEmailPage />,
+          },
+          {
+            path: "reset-password",
+            element: <ResetPasswordPage />,
+          },
+          {
+            path: "enter-verification-code",
+            element: <EnterVerificationCodePage />,
           },
         ],
       },
