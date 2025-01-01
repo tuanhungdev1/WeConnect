@@ -19,6 +19,7 @@ export default defineConfig({
       "@styles": path.resolve(__dirname, "src/styles"),
       "@redux": path.resolve(__dirname, "src/redux"),
       "@contexts": path.resolve(__dirname, "src/contexts"),
+      "@services": path.resolve(__dirname, "src/services"),
     },
   },
 });

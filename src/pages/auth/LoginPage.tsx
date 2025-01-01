@@ -10,7 +10,7 @@ import GoogleLogo from "/google-logo.svg";
 import TwitterLogo from "/twiter-logo.svg";
 import { CheckboxInput } from "@components/checkboxs";
 
-interface LoginFormData {
+export interface LoginFormData {
   username: string;
   password: string;
   isRemember: boolean;

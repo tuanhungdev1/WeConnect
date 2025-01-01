@@ -1,10 +1,12 @@
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Typography } from "@mui/material";
 import PrimaryButton from "@components/buttons/PrimaryButton";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import VerificationCodeInput from "@components/formInputs/VerificationCodeInput";
+import { useVerifyOTPMutation } from "@services/rootApi";
 
-interface EnterVerificationCodeFormData {
+export interface EnterVerificationCodeFormData {
+  email: string;
   verificationCode: string;
 }
 
@@ -15,17 +17,33 @@ const EnterVerificationCodePage = () => {
     formState: { errors },
   } = useForm<EnterVerificationCodeFormData>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [verifyOTP] = useVerifyOTPMutation();
 
-  const onSubmit: SubmitHandler<EnterVerificationCodeFormData> = (data) => {
+  // Lấy email từ state được truyền khi điều hướng từ trang trước
+  const email = location.state?.email;
+
+  const onSubmit: SubmitHandler<EnterVerificationCodeFormData> = async (
+    data
+  ) => {
     console.log("Verification Code:", data.verificationCode);
-    // Thực hiện kiểm tra mã xác minh với backend
-    // Giả sử backend trả về thành công
-    const codeIsValid = false; // Thay thế bằng logic kiểm tra mã xác minh từ backend
-    if (codeIsValid) {
-      navigate("/reset-password");
-    } else {
-      // Hiển thị thông báo lỗi nếu mã xác minh không đúng
-      console.error("Mã xác minh không đúng");
+    if (!email) {
+      console.error("Email không tồn tại");
+      return;
+    }
+
+    try {
+      const response = await verifyOTP({
+        email,
+        verificationCode: data.verificationCode,
+      }).unwrap();
+      if (response.success) {
+        navigate("/reset-password");
+      } else {
+        console.error(response.message);
+      }
+    } catch (error) {
+      console.error("Lỗi khi xác minh mã OTP:", error);
     }
   };
 
@@ -54,7 +72,25 @@ const EnterVerificationCodePage = () => {
             control={control}
             defaultValue=""
             render={({ field }) => (
-              <VerificationCodeInput {...field} length={6} />
+              <VerificationCodeInput
+                {...field}
+                length={6}
+                sx={{
+                  "& .MuiOtpInput-input": {
+                    width: "3rem",
+                    height: "3rem",
+                    margin: "0.5rem",
+                    fontSize: "1.5rem",
+                    textAlign: "center",
+                    borderRadius: "0.25rem",
+                    border: "1px solid #ccc",
+                    "&:focus": {
+                      borderColor: "#007bff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  },
+                }}
+              />
             )}
           />
         </div>

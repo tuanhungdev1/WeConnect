@@ -9,7 +9,7 @@ import FaceBookLogo from "/facebook-logo.svg";
 import GoogleLogo from "/google-logo.svg";
 import TwitterLogo from "/twiter-logo.svg";
 
-interface RegisterFormData {
+export interface RegisterFormData {
   username: string;
   email: string;
   password: string;

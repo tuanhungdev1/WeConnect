@@ -33,7 +33,8 @@
       "@types-d/*": ["src/types/*"],
       "@styles/*": ["src/styles/*"],
       "@redux/*": ["src/redux/*"],
-      "@contexts/*": ["src/contexts/*"]
+      "@contexts/*": ["src/contexts/*"],
+      "@services/*": ["src/services/*"]
     }
   },
   "include": ["src"]
