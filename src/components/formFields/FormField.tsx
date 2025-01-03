@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { FormHelperText } from "@mui/material";
 import { Control, Controller, FieldValues, Path } from "react-hook-form";
 
 interface FormFieldProps<T extends FieldValues> {
@@ -8,6 +9,7 @@ interface FormFieldProps<T extends FieldValues> {
   type?: string;
   placeholder?: string;
   labelStyle?: React.CSSProperties;
+  error?: string;
   Component: React.ComponentType<{
     onChange: (...event: any[]) => void;
     value: any;
@@ -17,6 +19,7 @@ interface FormFieldProps<T extends FieldValues> {
     placeholder?: string;
     labelStyle?: React.CSSProperties;
     control?: Control<T>;
+    errorMessage?: string;
   }>;
 }
 
@@ -28,6 +31,7 @@ const FormField = <T extends FieldValues>({
   placeholder,
   labelStyle,
   Component,
+  error,
 }: FormFieldProps<T>) => {
   return (
     <div>
@@ -37,15 +41,19 @@ const FormField = <T extends FieldValues>({
         control={control}
         render={({ field: { onChange, value, name } }) => {
           return (
-            <Component
-              placeholder={placeholder}
-              onChange={onChange}
-              value={value}
-              name={String(name)}
-              type={type}
-              control={control}
-              labelStyle={labelStyle}
-            />
+            <>
+              <Component
+                placeholder={placeholder}
+                onChange={onChange}
+                value={value}
+                name={String(name)}
+                type={type}
+                control={control}
+                labelStyle={labelStyle}
+                errorMessage={error}
+              />
+              {error && <FormHelperText error>{error}</FormHelperText>}
+            </>
           );
         }}
       />

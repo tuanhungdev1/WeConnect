@@ -9,6 +9,7 @@ interface TextInputProps extends Omit<TextFieldProps, "onChange" | "type"> {
   placeholder?: string;
   label?: string;
   labelStyle?: React.CSSProperties;
+  errorMessage?: string;
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -17,6 +18,7 @@ const TextInput: React.FC<TextInputProps> = ({
   name,
   type = "text",
   placeholder,
+  errorMessage,
   ...rest
 }) => {
   return (
@@ -30,6 +32,7 @@ const TextInput: React.FC<TextInputProps> = ({
       value={value}
       onChange={onChange}
       type={type}
+      error={!!errorMessage}
       placeholder={placeholder}
       {...rest}
     />

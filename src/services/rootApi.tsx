@@ -32,10 +32,10 @@ export const rootApi = createApi({
         },
       }),
       login: builder.mutation<ApiResponse<object>, LoginFormData>({
-        query: ({ password, username, isRemember }) => {
+        query: ({ password, username, isRememberMe }) => {
           return {
             url: "/login",
-            body: { password, username, isRemember },
+            body: { password, username, isRememberMe },
             method: "POST",
           };
         },

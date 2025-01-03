@@ -1,21 +1,39 @@
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Typography } from "@mui/material";
-import PrimaryButton from "@components/buttons/PrimaryButton";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import VerificationCodeInput from "@components/formInputs/VerificationCodeInput";
 import { useVerifyOTPMutation } from "@services/rootApi";
+import { Typography } from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { FormField } from "@components/formFields";
+import { TextInput } from "@components/formInputs";
+import PrimaryButton from "@components/buttons/PrimaryButton";
 
 export interface EnterVerificationCodeFormData {
   email: string;
   verificationCode: string;
 }
 
+// Tạo schema validation bằng yup
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .required("Email là bắt buộc")
+    .email("Địa chỉ email không hợp lệ"),
+  verificationCode: yup
+    .string()
+    .required("Mã xác minh là bắt buộc")
+    .length(6, "Mã xác minh phải có 6 ký tự"),
+});
+
 const EnterVerificationCodePage = () => {
   const {
     control,
     handleSubmit,
+    register,
     formState: { errors },
-  } = useForm<EnterVerificationCodeFormData>();
+  } = useForm<EnterVerificationCodeFormData>({
+    resolver: yupResolver(schema), // Tích hợp schema validation vào react-hook-form
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const [verifyOTP] = useVerifyOTPMutation();
@@ -63,43 +81,15 @@ const EnterVerificationCodePage = () => {
         className="flex flex-col gap-4 mt-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div>
-          <Typography variant="body1" className="mb-2 text-dark-100">
-            Verification Code
-          </Typography>
-          <Controller
-            name="verificationCode"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <VerificationCodeInput
-                {...field}
-                length={6}
-                sx={{
-                  "& .MuiOtpInput-input": {
-                    width: "3rem",
-                    height: "3rem",
-                    margin: "0.5rem",
-                    fontSize: "1.5rem",
-                    textAlign: "center",
-                    borderRadius: "0.25rem",
-                    border: "1px solid #ccc",
-                    "&:focus": {
-                      borderColor: "#007bff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  },
-                }}
-              />
-            )}
-          />
-        </div>
-        {errors.verificationCode && (
-          <Typography color="error">
-            {errors.verificationCode.message}
-          </Typography>
-        )}
-
+        <FormField
+          control={control}
+          label="Verification Code"
+          Component={TextInput}
+          type="text"
+          placeholder="Enter verification code"
+          error={errors.verificationCode?.message}
+          {...register("verificationCode")}
+        />
         <PrimaryButton
           type="submit"
           fullWidth

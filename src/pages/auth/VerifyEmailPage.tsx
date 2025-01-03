@@ -1,13 +1,22 @@
-import { useForm, SubmitHandler } from "react-hook-form";
 import { Typography } from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Link, useNavigate } from "react-router-dom";
 import { FormField } from "@components/formFields";
 import { TextInput } from "@components/formInputs";
 import PrimaryButton from "@components/buttons/PrimaryButton";
-import { Link, useNavigate } from "react-router-dom";
 
 interface VerifyEmailFormData {
   email: string;
 }
+
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .required("Email là bắt buộc")
+    .email("Địa chỉ email không hợp lệ"),
+});
 
 const VerifyEmailPage = () => {
   const {
@@ -15,19 +24,19 @@ const VerifyEmailPage = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<VerifyEmailFormData>();
+  } = useForm<VerifyEmailFormData>({
+    resolver: yupResolver(schema),
+  });
+
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<VerifyEmailFormData> = (data) => {
     console.log(data);
-    // Thực hiện gửi yêu cầu đặt lại mật khẩu tới backend
-    // Nếu email tồn tại, gửi mã xác minh và chuyển hướng tới trang enter-verification-code
-    // Giả sử backend trả về thành công
-    const emailExists = true; // Thay thế bằng logic kiểm tra email từ backend
+
+    const emailExists = true;
     if (emailExists) {
-      navigate("/enter-verification-code");
+      navigate("/enter-verification-code", { state: { email: data.email } });
     } else {
-      // Hiển thị thông báo lỗi nếu email không tồn tại
       console.error("Email không tồn tại");
     }
   };
@@ -54,18 +63,9 @@ const VerifyEmailPage = () => {
           Component={TextInput}
           type="email"
           placeholder="Enter your email"
-          {...register("email", {
-            required: "Email là bắt buộc",
-            pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-              message: "Địa chỉ email không hợp lệ",
-            },
-          })}
+          error={errors.email?.message}
+          {...register("email")}
         />
-        {errors.email && (
-          <Typography color="error">{errors.email.message}</Typography>
-        )}
-
         <PrimaryButton
           type="submit"
           fullWidth

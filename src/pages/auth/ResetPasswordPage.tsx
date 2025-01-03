@@ -1,14 +1,27 @@
-import { useForm, SubmitHandler } from "react-hook-form";
 import { Typography } from "@mui/material";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { FormField } from "@components/formFields";
 import { TextInput } from "@components/formInputs";
-import PrimaryButton from "@components/buttons/PrimaryButton";
-import { Link } from "react-router-dom";
+import { PrimaryButton } from "@components/buttons";
 
 interface ResetPasswordFormData {
   newPassword: string;
   confirmNewPassword: string;
 }
+
+// Tạo schema validation bằng yup
+const schema = yup.object().shape({
+  newPassword: yup
+    .string()
+    .required("Mật khẩu mới là bắt buộc")
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  confirmNewPassword: yup
+    .string()
+    .oneOf([yup.ref("newPassword"), undefined], "Mật khẩu không khớp")
+    .required("Xác nhận mật khẩu mới là bắt buộc"),
+});
 
 const ResetPasswordPage = () => {
   const {
@@ -16,12 +29,12 @@ const ResetPasswordPage = () => {
     handleSubmit,
     register,
     formState: { errors },
-    getValues,
-  } = useForm<ResetPasswordFormData>();
+  } = useForm<ResetPasswordFormData>({
+    resolver: yupResolver(schema), // Tích hợp schema validation vào react-hook-form
+  });
 
   const onSubmit: SubmitHandler<ResetPasswordFormData> = (data) => {
     console.log(data);
-    // Thực hiện gửi yêu cầu đặt lại mật khẩu tới backend
   };
 
   return (
@@ -46,36 +59,18 @@ const ResetPasswordPage = () => {
           Component={TextInput}
           type="password"
           placeholder="Enter new password"
-          {...register("newPassword", {
-            required: "Mật khẩu mới là bắt buộc",
-            minLength: {
-              value: 8,
-              message: "Mật khẩu phải có ít nhất 8 ký tự",
-            },
-          })}
+          error={errors.newPassword?.message}
+          {...register("newPassword")}
         />
-        {errors.newPassword && (
-          <Typography color="error">{errors.newPassword.message}</Typography>
-        )}
-
         <FormField
           control={control}
           label="Confirm New Password"
           Component={TextInput}
           type="password"
           placeholder="Confirm new password"
-          {...register("confirmNewPassword", {
-            required: "Xác nhận mật khẩu mới là bắt buộc",
-            validate: (value) =>
-              value === getValues("newPassword") || "Mật khẩu không khớp",
-          })}
+          error={errors.confirmNewPassword?.message}
+          {...register("confirmNewPassword")}
         />
-        {errors.confirmNewPassword && (
-          <Typography color="error">
-            {errors.confirmNewPassword.message}
-          </Typography>
-        )}
-
         <PrimaryButton
           type="submit"
           fullWidth
@@ -86,15 +81,6 @@ const ResetPasswordPage = () => {
         >
           Set New Password
         </PrimaryButton>
-        <Typography
-          variant="body1"
-          className="mt-4 text-base text-center text-dark-100 opacity-80"
-        >
-          Remember your password?{" "}
-          <Link to={"/login"} className="text-blue-primary">
-            Sign in
-          </Link>
-        </Typography>
       </form>
     </div>
   );

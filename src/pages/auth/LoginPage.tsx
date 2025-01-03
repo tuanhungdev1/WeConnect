@@ -1,20 +1,33 @@
-import { PrimaryButton } from "@components/buttons";
-import { FormField } from "@components/formFields";
-import { TextInput } from "@components/formInputs";
 import { Typography } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { Link } from "react-router-dom";
 
 import FaceBookLogo from "/facebook-logo.svg";
 import GoogleLogo from "/google-logo.svg";
 import TwitterLogo from "/twiter-logo.svg";
-import { CheckboxInput } from "@components/checkboxs";
+import { FormField } from "@components/formFields";
+import { TextInput } from "@components/formInputs";
+import { PrimaryButton } from "@components/buttons";
 
 export interface LoginFormData {
   username: string;
   password: string;
-  isRemember: boolean;
+  isRememberMe: boolean;
 }
+
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required("Tên đăng nhập là bắt buộc")
+    .max(100, "Tên đăng nhập không được vượt quá 100 ký tự"),
+  password: yup
+    .string()
+    .required("Mật khẩu là bắt buộc")
+    .min(8, "Mật khẩu phải có ít nhất 8 ký tự"),
+  isRememberMe: yup.boolean().default(false),
+});
 
 const LoginPage = () => {
   const {
@@ -22,21 +35,24 @@ const LoginPage = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(schema),
+  });
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     console.log(data);
   };
+
   return (
     <div className="mt-5">
       <Typography variant="h5" className="mb-2 text-2xl text-dark-100">
-        Welcome to WeConnect! 👋
+        Welcome back!
       </Typography>
       <Typography
         variant="body1"
         className="mt-2 mb-5 text-base text-dark-100 opacity-80"
       >
-        Please sign in to your account and start the adventure
+        Please sign in to your account.
       </Typography>
 
       <form
@@ -45,53 +61,20 @@ const LoginPage = () => {
       >
         <FormField
           control={control}
-          label="Username or Email"
-          placeholder="Enter your username or email"
+          label="Email"
           Component={TextInput}
-          {...register("username", {
-            required: "Tên đăng nhập là bắt buộc",
-            maxLength: {
-              value: 100,
-              message: "Tên đăng nhập không được vượt quá 100 ký tự",
-            },
-          })}
+          type="email"
+          error={errors.username?.message}
+          {...register("username")}
         />
-        {errors.username && (
-          <Typography color="error">{errors.username.message}</Typography>
-        )}
-
         <FormField
           control={control}
           label="Password"
           Component={TextInput}
-          placeholder="Enter your password"
           type="password"
-          {...register("password", {
-            required: "Mật khẩu là bắt buộc",
-            minLength: {
-              value: 8,
-              message: "Mật khẩu phải có ít nhất 8 ký tự",
-            },
-          })}
+          error={errors.password?.message}
+          {...register("password")}
         />
-        {errors.password && (
-          <Typography color="error">{errors.password.message}</Typography>
-        )}
-
-        <div className="flex items-center justify-between">
-          <FormField
-            control={control}
-            label=""
-            name="isRemember"
-            Component={(props) => (
-              <CheckboxInput {...props} label="Remember me" />
-            )}
-          />
-          <Link to="/verify-email" className="text-sm text-blue-primary">
-            Forgot password?
-          </Link>
-        </div>
-
         <PrimaryButton
           type="submit"
           fullWidth
@@ -100,7 +83,7 @@ const LoginPage = () => {
           color="primary"
           className=" bg-blue-primary"
         >
-          Sign up
+          Sign in
         </PrimaryButton>
         <Typography
           variant="body1"
@@ -108,7 +91,7 @@ const LoginPage = () => {
         >
           Don't have an account?{" "}
           <Link to={"/register"} className="text-blue-primary">
-            Sign up now
+            Sign up instead
           </Link>
         </Typography>
       </form>
